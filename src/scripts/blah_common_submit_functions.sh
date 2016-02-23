@@ -601,9 +601,9 @@ function bls_start_job_wrapper ()
   if [ "x$bls_opt_environment" != "x" ] ; then
           echo ""
           echo "# Setting the environment:"
-  	eval "env_array=($bls_opt_environment)"
+          env_array=($bls_opt_environment)
           for  env_var in "${env_array[@]}"; do
-                   echo export \"$env_var\"
+              echo export \"$env_var\"
           done
   else
           if [ "x$bls_opt_envir" != "x" ] ; then
