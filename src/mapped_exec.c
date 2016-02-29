@@ -182,24 +182,9 @@ escape_wordexp_special_chars(char *in)
 
 
   inside_double_quotes = FALSE;
-  inside_single_quotes = FALSE;
 
   for (wcur=ret,prev='\000',cur=in; *cur != '\000'; cur++)
    {
-    if (*cur == '\'')
-     {
-      if (inside_single_quotes)
-       {
-        if (prev != '\\')
-         {
-          inside_single_quotes = FALSE;
-         }
-       }
-      else if (!inside_double_quotes)
-       {
-        inside_single_quotes = TRUE;
-       }
-     }
     if (*cur == '"')
      {
       if (inside_double_quotes)
@@ -209,15 +194,11 @@ escape_wordexp_special_chars(char *in)
           inside_double_quotes = FALSE;
          }
        }
-      else if (!inside_single_quotes)
-       {
-        inside_double_quotes = TRUE;
-       }
      }
 
     if (strchr(special, *cur) != NULL)
      {
-      if (!inside_single_quotes && !inside_double_quotes)
+      if (!inside_double_quotes)
        {
         /* Escape special character */
         *wcur = '\\';
