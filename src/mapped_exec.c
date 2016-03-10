@@ -158,10 +158,8 @@ merciful_kill(pid_t pid, exec_cmd_t *cmd)
 char *
 escape_wordexp_special_chars(char *in)
 {
-  char *special="|&;<>(){}";
+  char *special="|$&;<>(){}";
   int inside_double_quotes;
-  int inside_single_quotes;
-  int inside_command_subst;
 
   int special_count;
 
@@ -184,25 +182,9 @@ escape_wordexp_special_chars(char *in)
 
 
   inside_double_quotes = FALSE;
-  inside_single_quotes = FALSE;
-  inside_command_subst = FALSE;
 
   for (wcur=ret,prev='\000',cur=in; *cur != '\000'; cur++)
    {
-    if (*cur == '\'')
-     {
-      if (inside_single_quotes)
-       {
-        if (prev != '\\')
-         {
-          inside_single_quotes = FALSE;
-         }
-       }
-      else if (!inside_double_quotes && !inside_command_subst)
-       {
-        inside_single_quotes = TRUE;
-       }
-     }
     if (*cur == '"')
      {
       if (inside_double_quotes)
@@ -212,41 +194,15 @@ escape_wordexp_special_chars(char *in)
           inside_double_quotes = FALSE;
          }
        }
-      else if (!inside_single_quotes && !inside_command_subst)
-       {
-        inside_double_quotes = TRUE;
-       }
-     }
-    if (*cur == '(')
-     {
-      if (!inside_single_quotes && !inside_double_quotes &&
-          prev == '$')
-       {
-        inside_command_subst = TRUE;
-       }
      }
 
     if (strchr(special, *cur) != NULL)
      {
-      if (!inside_single_quotes && !inside_double_quotes &&
-          !inside_command_subst)
+      if (!inside_double_quotes)
        {
         /* Escape special character */
         *wcur = '\\';
         wcur++;
-       }
-     }
-
-    /* This check must follow the special character escape check */
-    /* as ')' is one of the special characters */
-    if (*cur == ')')
-     {
-      if (inside_command_subst)
-       {
-        if (prev != '\\')
-         {
-          inside_command_subst = FALSE;
-         }
        }
      }
 
