@@ -626,6 +626,11 @@ function bls_start_job_wrapper ()
   else
     run_dir="home_$bls_tmp_name"
   fi
+
+  # Replace special characters, because lcg-cp (calling globus_url_copy) cannot
+  # handle them in the path. (In particular, '#', from the Condor job ID)
+  run_dir=${run_dir//[^[:alnum:]-_.]/_}
+
   if [ -n "$blah_wn_temporary_home_dir" ] ; then
     echo "new_home=${blah_wn_temporary_home_dir}/$run_dir"
   else
