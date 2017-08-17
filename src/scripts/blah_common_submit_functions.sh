@@ -633,7 +633,7 @@ function bls_start_job_wrapper ()
   fi
 
   echo "mkdir \$new_home"
-  echo "trap 'wait \$job_pid; cd \$old_home; rm -rf \$new_home; exit 255' 1 2 3 15 24"
+  echo "trap 'kill -s SIGQUIT \$job_pid; wait \$job_pid; cd \$old_home; rm -rf \$new_home; exit 255' 1 2 3 15 24"
   echo "trap 'wait \$job_pid; cd \$old_home; rm -rf \$new_home' 0"
 
   echo "# Copy into new home any shared input sandbox file"
