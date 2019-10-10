@@ -85,8 +85,17 @@ bls_save_submit
 ###############################################################
 
 datenow=`date +%Y%m%d`
-jobID=`${slurm_binpath}/sbatch $bls_tmp_file` # actual submission
-retcode=$?
+retry=0
+MAX_RETRY=3
+until [ $retry -eq $MAX_RETRY ] ; do
+    jobID=$(${slurm_binpath}/sbatch $bls_tmp_file)
+    retcode=$?
+    if [ "$retcode" == "0" ] ; then
+        break
+    fi
+    retry=$[$retry+1]
+    sleep 10
+done
 
 if [ "$retcode" != "0" ] ; then
 	rm -f $bls_tmp_file
