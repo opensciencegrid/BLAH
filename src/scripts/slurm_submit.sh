@@ -75,7 +75,16 @@ fi
 bls_set_up_local_and_extra_args
 
 # Input and output sandbox setup.
-# Assume all filesystems are shared.
+echo "# Begin file staging" >> $bls_tmp_file
+echo "cd \$HOME" >> $bls_tmp_file
+bls_fl_subst_and_dump inputsand "curl --retry 5 -s -o @@F_REMOTE http://`hostname -s`:8080@@F_LOCAL" >> $bls_tmp_file
+bls_fl_subst_and_dump inputsand "chmod go-rwx @@F_REMOTE" >> $bls_tmp_file
+echo "function blah_stageout_trap() {" >> $bls_tmp_file
+bls_fl_subst_and_dump outputsand "    curl --retry 5 -s -F 'data=@@@F_REMOTE' http://`hostname -s`:8080@@F_LOCAL" >> $bls_tmp_file
+bls_fl_subst_and_dump outputsand "    rm -f @@F_REMOTE" >> $bls_tmp_file
+echo "    sleep 5" >> $bls_tmp_file
+echo "}" >> $bls_tmp_file
+echo "# End file staging" >> $bls_tmp_file
 
 bls_add_job_wrapper
 bls_save_submit

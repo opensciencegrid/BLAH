@@ -748,6 +748,11 @@ function bls_start_job_wrapper ()
   echo "# Move all relative outputsand paths out of temp home"
   echo "cd \$new_home"
   bls_fl_subst_relative_paths_and_dump outputsand "mv \"@@F_WORKNAME\" \"@@F_REMOTE\" 2> /dev/null" "\\\$old_home" 
+  echo "if declare -f blah_stageout_trap &>/dev/null; then"
+  echo "  pushd \$old_home"
+  echo "  blah_stageout_trap"
+  echo "  popd"
+  echo "fi"
   echo "# Move any remapped outputsand file to shared directories"
   bls_fl_subst_relative_paths_and_dump outputmove "mv \"@@F_REMOTE\" \"@@F_LOCAL\" 2> /dev/null"
   

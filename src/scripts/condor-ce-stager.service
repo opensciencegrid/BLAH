@@ -1,0 +1,9 @@
+[Unit]
+Description=Simple app to stage HTCondor-CE files to/from worker nodes
+           
+[Service]
+ExecStart=/usr/libexec/blahp/slurm_file_stager.py
+Restart=always
+           
+[Install]
+WantedBy=condor-ce.service
